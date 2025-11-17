@@ -1,0 +1,160 @@
+{% set name = "inline-snapshot" %}
+{% set version = "0.31.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|replace("-", "_") }}-{{ version }}.tar.gz
+  sha256: 4ea5ed70aa1d652713bbfd750606b94bd8a42483f7d3680433b3e92994495f64
+  patches:
+    - patches/0001-fix-uninitialized-_changes.patch
+
+build:
+  number: 0
+  skip: true  # [py<38]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - pip
+    - python
+    - hatchling
+  run:
+    - python
+    - asttokens >=2.0.5
+    - executing >=2.2.0
+    - rich >=13.7.1
+    - tomli >=2.0.0  # [py<311]
+    - pytest >=8.3.4
+  run_constrained:
+    - black >=23.3.0
+    - dirty-equals >=0.9.0
+
+{% set deselect_tests = "--deselect=tests/external/test_external.py::test_pytest_compare_external" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_compare_external_bytes" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_existing_external_import" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_trim_external" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_new_external" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_config_hash_length" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_no_imports" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_new_externals" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_formatting.py::test_format_command_fail" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_get_snapshot_value.py::test_snapshot_external[True]" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_get_snapshot_value.py::test_snapshot_external[False]" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_get_snapshot_value.py::test_external[True]" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_get_snapshot_value.py::test_external[False]" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_mutable_values" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_comparison" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_ge" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_le" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_getitem" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_assert" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_format_file" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_format_value" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_type_error" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_sub_snapshot_create" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_sub_snapshot_empty_string" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_different_snapshot_name" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_quoting_change_is_no_update" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_trailing_comma" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_starred_warns_list" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_starred_warns_dict" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_is" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_create_ellipsis" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_fix_list_fix" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_fix_list_insert" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_fix_list_delete" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_fix_tuple_delete" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_fix_dict_change" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_fix_dict_remove" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_fix_dict_insert" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_fix_dict_with_non_literal_keys" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_no_update_for_dirty_equals" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_preserve_case_from_original_mr" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_create" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_fix" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_update" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_trim" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_multiple" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_multiple_report" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_black_config" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_disabled" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_compare" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_pytest_inlinesnapshot_auto" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_empty_sub_snapshot" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_persist_unknown_external" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_equal_check" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_equal_check_2" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_string.py::test_string_update" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_string.py::test_newline" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_string.py::test_trailing_whitespaces" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_string.py::test_fix_remove_triple_quotes" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_string.py::test_update_remove_triple_quotes" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_transformed.py::test_repr" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_typing.py::test_typing_args[pyright]" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_typing.py::test_typing_call[pyright]" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist_disabled" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist_and_disable" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist_zero_processes" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_compare_external" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_compare_external_bytes" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_existing_external_import" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_trim_external" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_new_external" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_pytest_config_hash_length" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/external/test_external.py::test_new_externals" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_formatting.py::test_black_formatting_error" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_formatting.py::test_format_command_fail" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_formatting.py::test_no_black" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_generic" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_generic_multi" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_quoting_change_is_no_update" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_inline_snapshot.py::test_trailing_comma" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_preserve_values.py::test_generic" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_multiple_report" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_black_config" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_compare" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_pytest_inlinesnapshot_auto" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_empty_sub_snapshot" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_persist_unknown_external" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_equal_check" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_plugin.py::test_equal_check_2" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist_disabled" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist_and_disable" %}
+
+test:
+  source_files:
+    - tests
+  imports:
+    - inline_snapshot
+  requires:
+    - pip
+    - pytest
+    - black
+    - freezegun
+    - dirty-equals
+    - mypy >=1.2.0
+    - pydantic >=1
+    - hypothesis >=6.75.5
+  commands:
+    - pip check
+    - pytest -v tests {{ deselect_tests }}
+
+about:
+  home: https://github.com/15r10nk/inline-snapshots
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: golden master/snapshot/approval testing library which puts the values right into your source code
+  description: golden master/snapshot/approval testing library which puts the values right into your source code
+  doc_url: https://15r10nk.github.io/inline-snapshot/latest
+  dev_url: https://github.com/15r10nk/inline-snapshots
+
+extra:
+  recipe-maintainers:
+    - moritzwilksch
+    - wolfv
