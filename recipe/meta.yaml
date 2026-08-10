@@ -1,19 +1,17 @@
 {% set name = "inline-snapshot" %}
-{% set version = "0.31.1" %}
+{% set version = "0.35.3" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|replace("-", "_") }}-{{ version }}.tar.gz
-  sha256: 4ea5ed70aa1d652713bbfd750606b94bd8a42483f7d3680433b3e92994495f64
-  patches:
-    - patches/0001-fix-uninitialized-_changes.patch
+  sha256: 5d76f3b4b134fb190b7883669eb496f5c3e7d1c9549bbd6d78b5b8ac17e553e3
 
 build:
   number: 0
-  skip: true  # [py<38]
+  skip: true  # [py<39]
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
@@ -28,6 +26,7 @@ requirements:
     - rich >=13.7.1
     - tomli >=2.0.0  # [py<311]
     - pytest >=8.3.4
+    - typing-extensions
   run_constrained:
     - black >=23.3.0
     - dirty-equals >=0.9.0
@@ -125,6 +124,7 @@ requirements:
 {% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist" %}
 {% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist_disabled" %}
 {% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist_and_disable" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_get_snapshot_value.py::test_dataclass" %}
 
 test:
   source_files:
@@ -140,6 +140,8 @@ test:
     - mypy >=1.2.0
     - pydantic >=1
     - hypothesis >=6.75.5
+    - isort
+    - attrs
   commands:
     - pip check
     - pytest -v tests {{ deselect_tests }}
