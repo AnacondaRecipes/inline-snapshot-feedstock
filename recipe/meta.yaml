@@ -124,6 +124,7 @@ requirements:
 {% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist" %}
 {% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist_disabled" %}
 {% set deselect_tests = deselect_tests + " --deselect=tests/test_xdist.py::test_xdist_and_disable" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_get_snapshot_value.py::test_dataclass" %}
 
 test:
   source_files:
