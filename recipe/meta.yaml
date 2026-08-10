@@ -140,6 +140,7 @@ test:
     - pydantic >=1
     - hypothesis >=6.75.5
     - isort
+    - attrs
   commands:
     - pip check
     - pytest -v tests {{ deselect_tests }}
