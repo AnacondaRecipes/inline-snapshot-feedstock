@@ -139,6 +139,7 @@ test:
     - mypy >=1.2.0
     - pydantic >=1
     - hypothesis >=6.75.5
+    - isort
   commands:
     - pip check
     - pytest -v tests {{ deselect_tests }}
