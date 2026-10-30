@@ -152,7 +152,9 @@ test:
     - black
     - freezegun
     - dirty-equals
-    - mypy >=1.2.0
+    # mypy has no py315 build for win-64/win-arm64 (PKG-19504); restore the pin
+    # for Windows py315 once that lands.
+    - mypy >=1.2.0  # [not (win and py>=315)]
     - pydantic >=1
     - hypothesis >=6.75.5
     - isort
