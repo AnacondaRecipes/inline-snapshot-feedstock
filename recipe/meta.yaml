@@ -129,6 +129,8 @@ requirements:
 test:
   source_files:
     - tests
+    # 0.36.1 ships tests/test_benchmark_fixtures.py which imports benchmarks._fixtures
+    - benchmarks
   imports:
     - inline_snapshot
   requires:
