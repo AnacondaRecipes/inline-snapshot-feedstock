@@ -1,16 +1,16 @@
 {% set name = "inline-snapshot" %}
-{% set version = "0.35.3" %}
+{% set version = "0.36.1" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|replace("-", "_") }}-{{ version }}.tar.gz
-  sha256: 5d76f3b4b134fb190b7883669eb496f5c3e7d1c9549bbd6d78b5b8ac17e553e3
+  url: https://files.pythonhosted.org/packages/0e/80/13c7576e62fd189e9ff86a18e32a9bfcc04189baee617eef5f647df44a0f/inline_snapshot-0.36.1.tar.gz
+  sha256: ff57828c691eaafe03426de25f2c21a1e382905dcbe110934df862297e8c5f8a
 
 build:
-  number: 1
+  number: 0
   skip: true  # [py<39]
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
