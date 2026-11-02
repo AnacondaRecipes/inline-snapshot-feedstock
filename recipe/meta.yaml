@@ -149,7 +149,11 @@ test:
   requires:
     - pip
     - pytest
-    - black
+    # black has no py315 build for win-arm64 (main tops out at py314), and the
+    # suite cannot run without it: tests/test_docs.py formats through a `black`
+    # format-command and tests/test_formatting.py patches black. Drop it there
+    # and skip pytest for that one variant (see commands).
+    - black  # [not (win and arm64 and py>=315)]
     - freezegun
     - dirty-equals
     # mypy has no py315 build for win-64/win-arm64 (PKG-19504); restore the pin
@@ -164,7 +168,8 @@ test:
     - pytest -v tests {{ deselect_tests }}  # [not (win and py>=315)]
     # mypy has no py315 build on Windows yet (PKG-19504), so the [mypy]
     # parametrizations cannot run there; every other variant keeps them.
-    - pytest -v tests {{ deselect_tests }} --deselect "tests/test_typing.py::test_typing_args[mypy]" --deselect "tests/test_typing.py::test_typing_call[mypy]"  # [win and py>=315]
+    # win-arm64 py315 runs no pytest at all: black is unavailable there.
+    - pytest -v tests {{ deselect_tests }} --deselect "tests/test_typing.py::test_typing_args[mypy]" --deselect "tests/test_typing.py::test_typing_call[mypy]"  # [win and py>=315 and not arm64]
 
 about:
   home: https://github.com/15r10nk/inline-snapshots
