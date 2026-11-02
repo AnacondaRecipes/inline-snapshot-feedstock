@@ -161,7 +161,10 @@ test:
     - attrs
   commands:
     - pip check
-    - pytest -v tests {{ deselect_tests }}
+    - pytest -v tests {{ deselect_tests }}  # [not (win and py>=315)]
+    # mypy has no py315 build on Windows yet (PKG-19504), so the [mypy]
+    # parametrizations cannot run there; every other variant keeps them.
+    - pytest -v tests {{ deselect_tests }} --deselect "tests/test_typing.py::test_typing_args[mypy]" --deselect "tests/test_typing.py::test_typing_call[mypy]"  # [win and py>=315]
 
 about:
   home: https://github.com/15r10nk/inline-snapshots
